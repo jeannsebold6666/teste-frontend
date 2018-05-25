@@ -1,0 +1,120 @@
+@import "./scss/variables";
+@import "./scss/fonts";
+
+#wrapper{
+    #ranking-list{
+        .ranking-item{
+            &:hover{
+                background: $detail-color;
+                .ranking-frame{
+                    border-color: $white;
+                }        
+                .ranking-info{
+                    .ranking-name{
+                        color: $white;                        
+                    }            
+                    .ranking-desc{
+                        color: $hover-text;
+                    }
+                }
+        
+                .ranking-tooltip{
+                    display: block;
+                }
+        
+            }
+        }
+
+    }
+}
+.section-ranking {
+    margin: 0 auto;
+    display: block;
+    max-width: 405px;
+}
+
+#wrapper{
+    max-width: 374px;
+   
+    #ranking-list{
+        padding-left: 32px;
+        .ranking-item{
+            background: $white;            
+            list-style: none;
+            padding: 18px;
+            cursor: default;
+            transition: 0.5s;
+            position: relative;
+            
+            .ranking-frame-position {
+                position: absolute;
+                top: 70px;
+                left: 60px;
+                background: white;
+                border-radius: 50%;
+                width: 20px;
+                height: 20px;
+                text-align: center;
+                z-index: 1;
+                border: 2px solid $grey-2;
+            }
+
+            .ranking-text {
+                width: 20px;
+                height: 20px;
+                font-size: 14px;
+                margin-top: 1px;
+                font-family: $font-bold;
+                color: $grey-3;
+            }           
+
+            &:nth-child(even){
+                background: $bg-alternate;
+                    &:hover{
+                        background: $detail-color;
+                    }
+            }
+
+            // fallback ie9
+            // &:first-child  *  *  *{
+            //     background: $bg-alternate;
+            // }
+            .ranking-frame{
+                transition: 0.5s;                
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                border: 4px solid $detail-color;
+                overflow: hidden;
+                display: inline-block;
+    
+                .ranking-pic{
+                    height: 65px;
+                    transform: translateX(-12px);
+                    -ms-transform: translateX(-12px);
+                }
+            }
+
+            .ranking-info {
+                display: inline-block;
+                vertical-align: top;
+                margin-top: 16px;
+                margin-left: 20px;
+                
+                .ranking-name{
+                    transition: 0.5s;                
+                    font-family: $font-bold;
+                    color: $detail-color;
+                    font-size: $subTitle-size;
+                }
+
+                .ranking-desc{
+                    transition: 0.5s;
+                    color: $text-color;
+                    font-family: $font-default;
+                    font-size: $text-size;
+                }
+            }
+        }
+    }
+} 
