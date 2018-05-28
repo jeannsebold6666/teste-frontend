@@ -8,21 +8,63 @@ class Content extends Component {
   constructor(props, context) {
     super(props, context);
     this.click.bind(this);
+    this.delete.bind(this);
+    this.edit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.state = {
         data:[],
-        value: ''
+        value: '',
 
     };
   }
-  getValidationState() {
-    const length = this.state.value.length;
-    if (length > 10) return 'success';
-    else if (length > 5) return 'warning';
-    else if (length > 0) return 'error';
-    return null;
-  }
-  
+    handleChange(e) {
+        this.setState({ value: e.target.value });
+    }
+
+    componentDidUpdate() {
+    }
+    onload = function() {
+        document.getElementById('teses').onclick = function(event) {
+            var span, input, text;
+    
+            // Get the event (handle MS difference)
+            event = event || window.event;
+    
+            // Get the root element of the event (handle MS difference)
+            span = event.target || event.srcElement;
+    
+            // If it's a span...
+            if (span && span.tagName.toUpperCase() === "SPAN") {
+                // Hide it
+                span.style.display = "none";
+    
+                // Get its text
+                text = span.innerHTML;
+    
+                // Create an input
+                input = document.createElement("input");
+                input.type = "text";
+                input.value = text;
+                
+                input.size = Math.max(text.length / 4 * 3, 4);
+                span.parentNode.insertBefore(input, span);
+    
+                // Focus it, hook blur to undo
+                input.focus();
+                input.onblur = function() {
+                    // Remove the input
+                    span.parentNode.removeChild(input);
+    
+                    // Update the span
+                    span.innerHTML = input.value === "" ? "&nbsp;" : input.value;
+                    span.style.background='red';
+                    // Show the span again
+                    span.style.display = "";
+                };
+            }
+        };
+    }
+
     click(event) {
 
         event.preventDefault();
@@ -35,24 +77,32 @@ class Content extends Component {
             if(existingEntries == null) existingEntries = [];
             localStorage.setItem("empresas", JSON.stringify(data));
             existingEntries.push(data);
-            localStorage.setItem("empresas", JSON.stringify(existingEntries));
+            localStorage.setItem("empresas", JSON.stringify(data));
+            this.setState({data: data});
         })
         .catch((err)=> {})
     }
-  handleChange(e) {
-    this.setState({ value: e.target.value });
-  }
 
-    componentDidMount() {
-        //let storedClicks = JSON.parse(localStorage.getItem('empresas'));
-     
-            //console.log(storedClicks)
-            //this.setState({data: storedClicks});
-        
-        
-        
+    delete(event) {
+        localStorage.removeItem("empresas");
+    }
+
+    edit(event) {
         
     }
+
+    
+    componentDidMount() {
+        let storedClicks = JSON.parse(localStorage.getItem('empresas'));
+        
+        if( storedClicks == null) {
+           
+        } else {
+            this.setState({data: storedClicks});
+        }
+       
+    }
+   
     render() {
         let data = this.state.data;
         return (
@@ -61,7 +111,6 @@ class Content extends Component {
                 <form>
                     <FormGroup
                     controlId="formBasicText"
-                    validationState={this.getValidationState()}
                     >
                     <ControlLabel>BUSCAR EMPRESAS</ControlLabel>
                     <FormControl
@@ -76,7 +125,7 @@ class Content extends Component {
                     </FormGroup>
                     <Button onClick={this.click}type="submit">BUSCAR</Button>
                 </form> 
-                <Table striped bordered condensed hover>
+                <Table striped bordered condensed hover id="teses">
                     <thead>
                         <tr>
                         <th>#</th>
@@ -88,14 +137,15 @@ class Content extends Component {
                         </tr>
                     </thead>
                     <tbody>
+                        
                         {data.map((datas, index)  =>
                             <tr>
-                            <td>{datas.id}</td>
-                            <td>{datas.cnpj}</td>
-                            <td>{datas.nome}</td>
-                            <td>{datas.data_fundacao}</td>
-                            <td>{datas.situacao_receita} <small>data consulta: <strong>{datas.situacao_receita_data }</strong></small></td>
-                            <td> <Button bsStyle="warning">Editar</Button><Button bsStyle="danger">Deletar</Button></td>
+                            <td><span >{datas.id}</span></td>
+                            <td><span contenteditable="true">{datas.cnpj}</span></td>
+                            <td><span contenteditable="true">{datas.nome}</span></td>
+                            <td><span contenteditable="true">{datas.data_fundacao}</span></td>
+                            <td><span contenteditable="true">{datas.situacao_receita}</span> <small>data consulta: <strong><span contenteditable="true">{datas.situacao_receita_data }</span></strong></small></td>
+                            <td> <Button bsStyle="warning" onClick={this.edit}>Editar</Button><Button bsStyle="danger" onClick={this.delete}>Deletar</Button></td>
                             </tr>
                         )}
                     </tbody>
